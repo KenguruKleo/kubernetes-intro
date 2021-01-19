@@ -36,8 +36,38 @@ https://k8slens.dev/
 
 ## Ready to Play
 
+You can use this guide:
+https://kubernetes.io/docs/tutorials/kubernetes-basics/
 
 
+### Check cluster
 ```
+kubectl get nodes
 kubectl get pods -n kube-system
 ```
+
+### Deploy App
+```
+kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1
+kubectl get deployments
+kubectl get pods
+kubectl describe pods
+```
+
+Run proxy to expose App `kubectl proxy`
+and check proxy is running `curl http://localhost:8001/version`
+
+Save POD_NAME:
+```
+export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+echo Name of the Pod: $POD_NAME
+```
+
+Send request:
+
+`curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME:8080/proxy/`
+
+
+See logs: `kubectl logs $POD_NAME`
+
+
