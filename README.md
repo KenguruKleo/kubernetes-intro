@@ -149,3 +149,28 @@ kubectl rollout undo deployments/kubernetes-bootcamp
 ```
 
 
+### Ingress
+
+https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
+
+Get minikube service URL: `minikube service kubernetes-bootcamp --url`
+
+Deploy Ingress
+```
+kubectl apply -f ingress.yaml
+kubectl describe ingress
+```
+
+Find host ADDRESS `kubectl get ingress` and add it into the host file: `sudo nano /etc/hosts`
+
+e.g. add this line, instead 172.17.0.15 use ADDRESS:
+```
+172.17.0.15 hello-world.info
+```
+
+#### Verify that the Ingress controller is directing traffic:
+
+```
+curl hello-world.info
+```
+
