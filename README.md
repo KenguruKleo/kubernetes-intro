@@ -174,3 +174,45 @@ e.g. add this line, instead 172.17.0.15 use ADDRESS:
 curl hello-world.info
 ```
 
+### Ingress with 2 services / deployments
+
+#### Create Second Deployment
+
+Create a v2 Deployment using the following command:
+
+`kubectl create deployment web2 --image=gcr.io/google-samples/hello-app:2.0`
+
+Expose the Deployment:
+
+`kubectl expose deployment web2 --port=8080 --type=NodePort`
+
+#### Edit Ingress
+
+Edit the existing ingress.yaml and add the following lines:
+
+      - path: /v2
+        pathType: Prefix
+        backend:
+          service:
+            name: web2
+            port:
+              number: 8080
+Apply the changes:
+
+```
+kubectl apply -f ingress.yaml
+```
+
+#### Test Your Ingress
+Access the 1st version of the Hello World app.
+
+```
+curl hello-world.info
+```
+
+Access the 2nd version of the Hello World app.
+
+```
+curl hello-world.info/v2
+```
+
