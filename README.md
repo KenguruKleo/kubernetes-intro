@@ -25,6 +25,8 @@ Alternatively, minikube can download the appropriate version of kubectl, if you 
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
+https://kubernetes.io/ru/docs/reference/kubectl/cheatsheet/
+
 ```
 brew install kubectl
 kubectl version --client
@@ -69,5 +71,81 @@ Send request:
 
 
 See logs: `kubectl logs $POD_NAME`
+
+Access to container:
+```
+kubectl exec -ti $POD_NAME bash
+cat server.js
+curl localhost:8080
+exit
+```
+
+### Work with YAML
+
+See applied config: `kubectl get pod $POD_NAME -o yaml`
+
+Apply from the file:
+```
+kubectl delete deployment
+kubectl get pods
+kubectl apply -f deployment.yaml
+kubectl get pods
+```
+
+### Services
+
+Expose deployment:
+```
+kubectl get services
+kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+kubectl get services
+
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+
+curl $(minikube ip):$NODE_PORT
+```
+
+### Scaling
+
+```
+kubectl get deployments
+kubectl get rs
+kubectl scale deployments/kubernetes-bootcamp --replicas=4
+kubectl get deployments
+kubectl get pods -o wide
+
+curl $(minikube ip):$NODE_PORT
+
+kubectl scale deployments/kubernetes-bootcamp --replicas=2
+kubectl get pods -o wide
+```
+
+### Updating App
+
+```
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+kubectl get pods -o wide
+
+curl $(minikube ip):$NODE_PORT
+```
+
+#### Set broken image:
+
+```
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=gcr.io/google-samples/kubernetes-bootcamp:v10
+kubectl get deployments
+kubectl get pods -o wide
+
+curl $(minikube ip):$NODE_PORT
+
+kubectl describe pods
+```
+
+#### Rollout
+
+```
+kubectl rollout undo deployments/kubernetes-bootcamp
+```
 
 
